@@ -1,4 +1,5 @@
-import BaseComponent, { BaseComponentProps } from './baseComponent';
+import BaseComponent from './baseComponent';
+import { BaseComponentProps } from '@interfaces/BaseComponentProps';
 
 interface ButtonProps extends Omit<BaseComponentProps, 'tagName'> {
   listener?: (event?: MouseEvent) => void;

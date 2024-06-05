@@ -24,7 +24,9 @@ class Keyboard extends BaseComponent {
       this.keys.set(letter, button);
       this.insertChild(button);
     });
+  }
 
+  setWindowListener(keyHandler: (key: string) => void) {
     window.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.ctrlKey) return;
       const letter = event.key;

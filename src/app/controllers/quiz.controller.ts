@@ -2,6 +2,7 @@ import Keyboard from '@components/keyboard';
 import QuizService from '../services/quiz.service';
 import Quiz from '@components/quiz';
 import Gallows from '@components/gallows';
+import { GameEndWith } from '../enums/GameEndStatus';
 
 class QuizController {
   private service: QuizService;
@@ -9,7 +10,17 @@ class QuizController {
   private keyboard: Keyboard;
   private quiz: Quiz;
 
-  constructor(gallows: Gallows, keyboard: Keyboard, quiz: Quiz, service: QuizService) {
+  constructor({
+    gallows,
+    keyboard,
+    quiz,
+    service,
+  }: {
+    gallows: Gallows;
+    keyboard: Keyboard;
+    quiz: Quiz;
+    service: QuizService;
+  }) {
     this.service = service;
     this.gallows = gallows;
     this.keyboard = keyboard;
@@ -19,7 +30,7 @@ class QuizController {
   }
 
   private handleKeyPress = (key: string) => {
-    if (!this.service.checkLetter(key)) {
+    if (!this.service.isLetterInAnswer(key)) {
       this.service.incrementAttempts();
       this.gallows.drawStep(this.service.attempts);
     }
@@ -35,11 +46,11 @@ class QuizController {
   };
 
   private checkGameStatus() {
-    if (this.service.checkLose()) {
-      this.quiz.showModal('lose', this.service.answer, this.resetGame);
-    }
-    if (this.service.checkWin()) {
-      this.quiz.showModal('win', this.service.answer, this.resetGame);
+    const gameEnded = this.service.isWin() || this.service.isLose();
+
+    if (gameEnded) {
+      const gameStatus = this.service.isLose() ? GameEndWith.LOSE : GameEndWith.WIN;
+      this.quiz.showModal({ gameStatus, answer: this.service.answer, resetGame: this.resetGame });
     }
   }
 

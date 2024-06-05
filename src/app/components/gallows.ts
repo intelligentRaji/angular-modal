@@ -1,7 +1,7 @@
 import Canvas from './canvas';
 
 class Gallows extends Canvas {
-  private drawingSteps = [
+  private humanDrawingSteps = [
     () => {
       this.drawCircle(260, 100, 20);
     },
@@ -29,7 +29,7 @@ class Gallows extends Canvas {
   }
 
   get numberOfDrawingSteps(): number {
-    return this.drawingSteps.length;
+    return this.humanDrawingSteps.length;
   }
 
   private drawGallows() {
@@ -41,7 +41,7 @@ class Gallows extends Canvas {
   }
 
   public drawStep(step: number) {
-    const currentStep = this.drawingSteps[step];
+    const currentStep = this.humanDrawingSteps[step];
     if (currentStep) currentStep();
   }
 

@@ -1,8 +1,4 @@
-export interface BaseComponentProps<K extends keyof HTMLElementTagNameMap = 'div'> {
-  tagName?: K;
-  classNames?: string[];
-  textContent?: string;
-}
+import { BaseComponentProps } from '@interfaces/BaseComponentProps';
 
 class BaseComponent<K extends keyof HTMLElementTagNameMap = 'div'> {
   protected node: HTMLElementTagNameMap[K];

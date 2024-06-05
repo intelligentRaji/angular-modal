@@ -1,5 +1,5 @@
 import Keyboard from '@components/keyboard';
-import QuizController from './quiz/quiz.controller';
+import QuizController from './controllers/quiz.controller';
 import Gallows from '@components/gallows';
 import Quiz from '@components/quiz';
 import QuizService from '@services/quiz.service';
@@ -17,7 +17,12 @@ class App {
     const quiz = new Quiz();
     const service = new QuizService();
 
-    new QuizController(gallows, keyboard, quiz, service).startGame();
+    new QuizController({
+      gallows,
+      keyboard,
+      quiz,
+      service,
+    }).startGame();
 
     this.root.append(gallows.getNode(), quiz.getNode(), keyboard.getNode());
   }

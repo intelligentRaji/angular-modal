@@ -1,11 +1,6 @@
 import shuffleQuizzes from '@utils/shuffleQuizzes';
 import quizData from '../data/quizzes.json';
 
-export interface QuizData {
-  question: string;
-  answer: string;
-}
-
 class QuizService {
   private guesses = new Set<string>();
   private readonly quizData = shuffleQuizzes(quizData);
@@ -46,16 +41,16 @@ class QuizService {
     this.current = this.quizData[this.currentQuizId]!;
   }
 
-  checkLetter(letter: string): boolean {
+  isLetterInAnswer(letter: string): boolean {
     this.guesses.add(letter);
     return this.answer.toLowerCase().includes(letter);
   }
 
-  checkWin() {
+  isWin() {
     return this.hiddenAnswer === this.answer;
   }
 
-  checkLose() {
+  isLose() {
     return this.attempts >= this.maxAttempts;
   }
 

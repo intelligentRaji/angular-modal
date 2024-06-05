@@ -1,5 +1,6 @@
 import BaseComponent from '@components/baseComponent';
 import Button from '@components/button';
+import { GameEndWith } from '../enums/GameEndStatus';
 
 class Quiz extends BaseComponent {
   private question = new BaseComponent({ tagName: 'p', classNames: ['question'] });
@@ -13,13 +14,21 @@ class Quiz extends BaseComponent {
     this.insertChildren(this.question, this.answer, this.attempts, this.modal);
   }
 
-  showModal(state: 'win' | 'lose', answer: string, cb?: () => void) {
-    this.modal.setInnerHTML(`<p>${state}!</p><p>The answer was: ${answer}</p>`);
+  showModal({
+    gameStatus,
+    answer,
+    resetGame,
+  }: {
+    gameStatus: GameEndWith;
+    answer: string;
+    resetGame?: () => void;
+  }) {
+    this.modal.setInnerHTML(`<p>${gameStatus}!</p><p>The answer was: ${answer}</p>`);
     this.modal.insertChild(
       new Button({
         textContent: 'Play Again',
         listener: () => {
-          if (cb) cb();
+          if (resetGame) resetGame();
           this.modal.setInnerHTML('');
         },
       }),

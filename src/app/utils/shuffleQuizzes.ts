@@ -1,4 +1,4 @@
-import { QuizData } from '@services/quiz.service';
+import { QuizData } from '@interfaces/QuizData';
 
 export default function shuffleQuizzes(quizzes: QuizData[]): QuizData[] {
   const shuffledQuizzes = [...quizzes];

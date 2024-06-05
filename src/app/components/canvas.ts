@@ -1,4 +1,5 @@
-import BaseComponent, { BaseComponentProps } from '@components/baseComponent';
+import BaseComponent from '@components/baseComponent';
+import { BaseComponentProps } from '@interfaces/BaseComponentProps';
 
 interface CanvasProps extends Omit<BaseComponentProps, 'tagName'> {
   width: number;
