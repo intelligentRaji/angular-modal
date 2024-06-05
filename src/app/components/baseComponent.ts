@@ -1,7 +1,13 @@
+interface BaseComponentProps<K extends keyof HTMLElementTagNameMap = 'div'> {
+  tagName?: K;
+  classNames?: string[];
+  textContent?: string;
+}
+
 class BaseComponent<K extends keyof HTMLElementTagNameMap = 'div'> {
   protected node: HTMLElementTagNameMap[K];
 
-  constructor(tagName: K, classNames: string[] = [], textContent = '') {
+  constructor({ tagName = 'div' as K, classNames = [], textContent = '' }: BaseComponentProps<K>) {
     this.node = document.createElement(tagName);
     this.node.classList.add(...classNames);
     this.node.textContent = textContent;
@@ -11,7 +17,7 @@ class BaseComponent<K extends keyof HTMLElementTagNameMap = 'div'> {
     this.node.append(child.getNode());
   }
 
-  public insertChildren(children: BaseComponent<keyof HTMLElementTagNameMap>[]): void {
+  public insertChildren(...children: BaseComponent<keyof HTMLElementTagNameMap>[]): void {
     children.forEach((child) => {
       this.insertChild(child);
     });

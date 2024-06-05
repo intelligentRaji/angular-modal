@@ -1,12 +1,13 @@
 // @ts-check
 
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import tsEslint from 'typescript-eslint';
+import eslintAirbnbBasedConfig from './eslint.airbnb-based/eslint.airbnb-based-config.js';
 
-export default tseslint.config(
+export default tsEslint.config(
   eslint.configs.recommended,
-  ...tseslint.configs.strictTypeChecked,
-  ...tseslint.configs.stylisticTypeChecked,
+  ...tsEslint.configs.recommendedTypeChecked,
+  ...tsEslint.configs.stylisticTypeChecked,
   {
     languageOptions: {
       parserOptions: {
@@ -14,18 +15,12 @@ export default tseslint.config(
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    rules: {
+      ...eslintAirbnbBasedConfig,
+    },
   },
   {
     files: ['**/*.js'],
-    extends: [tseslint.configs.disableTypeChecked],
+    ...tsEslint.configs.disableTypeChecked,
   },
-  // {
-  //   rules: {
-  //     '@typescript-eslint/no-explicit-any': 'error',
-  //     '@typescript-eslint/explicit-function-return-type': 'error',
-  //     '@typescript-eslint/explicit-module-boundary-types': 'error',
-  //     '@typescript-eslint/explicit-member-accessibility': 'error',
-  //     '@typescript-eslint/array-type': ['error', { default: 'array-simple' }],
-  //   },
-  // },
 );

@@ -57,13 +57,13 @@
     "useUnknownInCatchVariables": true
   },
   "include": [
+    "./eslint.config.js",
     "./src/**/*.ts",
     "./vite.config.ts"
-  ],
+, "src/app/components/canvas.ts"  ],
   "exclude": [
     "node_modules",
     "dist",
     "build",
-    "eslint.config.js",
   ]
 }

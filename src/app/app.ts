@@ -1,18 +1,23 @@
-import Controller from '@components/core/controller';
+import Gallows from '@components/gallows';
+import Keyboard from '@components/keyboard';
+import QuizController from './quiz/quiz.controller';
+import Modal from '@components/modal';
 
 class App {
   private root: HTMLElement;
 
-  private element: HTMLElement;
-
-  constructor(element: HTMLElement, root: HTMLElement) {
+  constructor(root: HTMLElement) {
     this.root = root;
-    this.element = element;
   }
 
-  start() {
-    this.root.append(this.element);
+  public start() {
+    const gallows = new Gallows();
+    const keyboard = new Keyboard();
+    const quiz = new QuizController();
+    const modal = new Modal();
+
+    this.root.append(gallows.getNode(), quiz.mount(), keyboard.getNode(), modal.getNode());
   }
 }
 
-new App(new Controller().getNode(), document.body).start();
+new App(document.body).start();

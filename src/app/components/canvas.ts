@@ -1,9 +1,15 @@
-import BaseComponent from '@components/base-component';
+import BaseComponent from '@components/baseComponent';
+
+interface CanvasProps {
+  classNames: string[];
+  width: number;
+  height: number;
+}
 
 class Canvas extends BaseComponent<'canvas'> {
   protected context: CanvasRenderingContext2D | null;
-  constructor(width: number, height: number) {
-    super('canvas');
+  constructor({ classNames, width, height }: CanvasProps) {
+    super({ tagName: 'canvas', classNames });
     this.context = this.node.getContext('2d');
     this.node.width = width;
     this.node.height = height;
