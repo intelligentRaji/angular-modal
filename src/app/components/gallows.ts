@@ -1,4 +1,3 @@
-import eventEmitter, { eventNames } from '@services/eventEmitter';
 import Canvas from './canvas';
 
 class Gallows extends Canvas {
@@ -27,9 +26,6 @@ class Gallows extends Canvas {
     super({ classNames: ['gallows'], width: 300, height: 300 });
     this.setLineProperties('black', 5, 'round');
     this.drawGallows();
-
-    eventEmitter.on(eventNames.WRONG_KEY_PRESSED, (step: number) => this.drawStep(step));
-    eventEmitter.on(eventNames.RESET, () => this.newDraw());
   }
 
   get numberOfDrawingSteps(): number {

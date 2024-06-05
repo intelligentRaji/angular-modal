@@ -1,63 +1,56 @@
-import eventEmitter, { eventNames } from '@services/eventEmitter';
-import QuizService from './quiz.service';
-import QuizView from './quiz.view';
+import Keyboard from '@components/keyboard';
+import QuizService from '../services/quiz.service';
+import Quiz from '@components/quiz';
+import Gallows from '@components/gallows';
 
 class QuizController {
-  private service = new QuizService();
-  private view = new QuizView();
+  private service: QuizService;
+  private gallows: Gallows;
+  private keyboard: Keyboard;
+  private quiz: Quiz;
 
-  private maxAttempts: number;
-  private attempts = 0;
+  constructor(gallows: Gallows, keyboard: Keyboard, quiz: Quiz, service: QuizService) {
+    this.service = service;
+    this.gallows = gallows;
+    this.keyboard = keyboard;
+    this.quiz = quiz;
 
-  constructor(maxAttempts?: number) {
-    this.maxAttempts = maxAttempts ?? 6;
-
-    eventEmitter.on(eventNames.KEY_PRESSED, (key: string) => {
-      if (this.attempts === this.maxAttempts) return;
-      if (!this.service.checkLetter(key)) this.wrongGuess();
-
-      this.view.setAnswer(this.hiddenAnswer);
-      if (this.service.checkAnswer()) eventEmitter.emit(eventNames.GAME_WIN, this.answer);
-    });
-
-    eventEmitter.on(eventNames.RESET, () => {
-      this.attempts = 0;
-      this.service.newCurrent();
-      this.render();
-    });
-
-    this.render();
+    this.keyboard.render(this.handleKeyPress);
   }
 
-  get question() {
-    return this.service.question;
+  private handleKeyPress = (key: string) => {
+    if (!this.service.checkLetter(key)) {
+      this.service.incrementAttempts();
+      this.gallows.drawStep(this.service.attempts);
+    }
+    this.updateView();
+    this.checkGameStatus();
+  };
+
+  private resetGame = () => {
+    this.keyboard.reset();
+    this.gallows.newDraw();
+    this.service.newCurrent();
+    this.startGame();
+  };
+
+  private checkGameStatus() {
+    if (this.service.checkLose()) {
+      this.quiz.showModal('lose', this.service.answer, this.resetGame);
+    }
+    if (this.service.checkWin()) {
+      this.quiz.showModal('win', this.service.answer, this.resetGame);
+    }
   }
 
-  get answer() {
-    return this.service.answer;
+  updateView() {
+    this.quiz.setAnswer(this.service.hiddenAnswer);
+    this.quiz.setAttempts(this.service.attempts, this.service.maxAttempts);
   }
 
-  get hiddenAnswer() {
-    return this.service.hiddenAnswer;
-  }
-
-  render() {
-    this.view.setQuestion(this.question);
-    this.view.setAnswer(this.hiddenAnswer);
-    this.view.setAttempts(this.attempts, this.maxAttempts);
-  }
-
-  mount() {
-    return this.view.getNode();
-  }
-
-  wrongGuess() {
-    eventEmitter.emit(eventNames.WRONG_KEY_PRESSED, this.attempts);
-
-    if (this.attempts < this.maxAttempts) this.attempts += 1;
-    this.view.setAttempts(this.attempts, this.maxAttempts);
-
-    if (this.attempts === this.maxAttempts) eventEmitter.emit(eventNames.GAME_LOSE, this.answer);
+  startGame() {
+    this.quiz.setQuestion(this.service.question);
+    this.updateView();
   }
 }
 

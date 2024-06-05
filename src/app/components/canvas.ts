@@ -1,7 +1,6 @@
-import BaseComponent from '@components/baseComponent';
+import BaseComponent, { BaseComponentProps } from '@components/baseComponent';
 
-interface CanvasProps {
-  classNames: string[];
+interface CanvasProps extends Omit<BaseComponentProps, 'tagName'> {
   width: number;
   height: number;
 }
