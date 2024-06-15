@@ -1,6 +1,6 @@
 import { BaseComponentProps } from '@interfaces/BaseComponentProps';
 
-class BaseComponent<K extends keyof HTMLElementTagNameMap = 'div'> {
+export class BaseComponent<K extends keyof HTMLElementTagNameMap = 'div'> {
   protected node: HTMLElementTagNameMap[K];
 
   constructor({ tagName = 'div' as K, classNames = [], textContent = '' }: BaseComponentProps<K>) {
@@ -37,16 +37,16 @@ class BaseComponent<K extends keyof HTMLElementTagNameMap = 'div'> {
 
   public addListener<T extends keyof HTMLElementEventMap>(
     eventName: T,
-    callback: (e: HTMLElementEventMap[T]) => void,
+    eventHandler: (event: HTMLElementEventMap[T]) => void,
   ): void {
-    this.node.addEventListener(eventName, callback as EventListener);
+    this.node.addEventListener(eventName, eventHandler as EventListener);
   }
 
   public removeListener<T extends keyof HTMLElementEventMap>(
     eventName: T,
-    callback: (e: HTMLElementEventMap[T]) => void,
+    eventHandler: (event: HTMLElementEventMap[T]) => void,
   ): void {
-    this.node.removeEventListener(eventName, callback as EventListener);
+    this.node.removeEventListener(eventName, eventHandler as EventListener);
   }
 
   public setAttribute<T extends keyof HTMLElementTagNameMap[K] & string>(
@@ -68,5 +68,3 @@ class BaseComponent<K extends keyof HTMLElementTagNameMap = 'div'> {
     this.node.remove();
   }
 }
-
-export default BaseComponent;

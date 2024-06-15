@@ -1,11 +1,14 @@
 import { QuizData } from '@interfaces/QuizData';
 
-export default function shuffleQuizzes(quizzes: QuizData[]): QuizData[] {
+export function shuffleQuizzes(quizzes: QuizData[]): QuizData[] {
   const shuffledQuizzes = [...quizzes];
 
-  for (let i = shuffledQuizzes.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffledQuizzes[i], shuffledQuizzes[j]] = [shuffledQuizzes[j]!, shuffledQuizzes[i]!];
+  for (let index = shuffledQuizzes.length - 1; index > 0; index -= 1) {
+    const randomIndex = Math.floor(Math.random() * (index + 1));
+    [shuffledQuizzes[index], shuffledQuizzes[randomIndex]] = [
+      shuffledQuizzes[randomIndex]!,
+      shuffledQuizzes[index]!,
+    ];
   }
 
   return shuffledQuizzes;

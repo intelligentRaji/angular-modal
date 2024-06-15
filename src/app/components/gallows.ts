@@ -1,24 +1,24 @@
-import Canvas from './canvas';
+import { CanvasComponent } from './canvas';
 
-class Gallows extends Canvas {
+export class GallowsComponent extends CanvasComponent {
   private humanDrawingSteps = [
     () => {
-      this.drawCircle(260, 100, 20);
+      this.drawCircle({ centerX: 260, centerY: 100, radius: 20 });
     },
     () => {
-      this.drawLine(260, 120, 260, 180);
+      this.drawLine({ x1: 260, y1: 120, x2: 260, y2: 180 });
     },
     () => {
-      this.drawLine(260, 140, 240, 160);
+      this.drawLine({ x1: 260, y1: 140, x2: 240, y2: 160 });
     },
     () => {
-      this.drawLine(260, 140, 280, 160);
+      this.drawLine({ x1: 260, y1: 140, x2: 280, y2: 160 });
     },
     () => {
-      this.drawLine(260, 180, 240, 200);
+      this.drawLine({ x1: 260, y1: 180, x2: 240, y2: 200 });
     },
     () => {
-      this.drawLine(260, 180, 280, 200);
+      this.drawLine({ x1: 260, y1: 180, x2: 280, y2: 200 });
     },
   ];
 
@@ -33,11 +33,11 @@ class Gallows extends Canvas {
   }
 
   private drawGallows() {
-    this.drawLine(40, 240, 360, 240);
-    this.drawLine(80, 239, 80, 42);
-    this.drawLine(80, 41, 260, 40);
-    this.drawLine(80, 80, 120, 42);
-    this.drawLine(260, 40, 260, 80);
+    this.drawLine({ x1: 40, y1: 240, x2: 360, y2: 240 });
+    this.drawLine({ x1: 80, y1: 239, x2: 80, y2: 42 });
+    this.drawLine({ x1: 80, y1: 41, x2: 260, y2: 40 });
+    this.drawLine({ x1: 80, y1: 80, x2: 120, y2: 42 });
+    this.drawLine({ x1: 260, y1: 40, x2: 260, y2: 80 });
   }
 
   public drawStep(step: number) {
@@ -50,5 +50,3 @@ class Gallows extends Canvas {
     this.drawGallows();
   }
 }
-
-export default Gallows;

@@ -1,9 +1,10 @@
 // @ts-check
 
 import eslint from '@eslint/js';
+import { personalRules } from './eslint-rules/eslint.personal-rules.js';
 import tsEslint from 'typescript-eslint';
-import eslintAirbnbBasedConfig from './eslint.airbnb-based/eslint.airbnb-based-config.js';
 
+// eslint-disable-next-line no-restricted-exports
 export default tsEslint.config(
   eslint.configs.recommended,
   ...tsEslint.configs.recommendedTypeChecked,
@@ -16,7 +17,7 @@ export default tsEslint.config(
       },
     },
     rules: {
-      ...eslintAirbnbBasedConfig,
+      ...personalRules,
     },
   },
   {

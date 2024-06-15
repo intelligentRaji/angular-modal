@@ -1,17 +1,17 @@
-import BaseComponent from './baseComponent';
-import Button from './button';
-import charsInRange from '@utils/charsInRange';
+import { BaseComponent } from './baseComponent';
+import { ButtonComponent } from './button';
+import { charsInRange } from '@utils/charsInRange';
 
-class Keyboard extends BaseComponent {
-  private keys = new Map<string, Button>();
+export class KeyboardComponent extends BaseComponent {
+  private keys = new Map<string, ButtonComponent>();
 
   constructor() {
     super({ classNames: ['keyboard'] });
   }
 
-  public render(keyHandler: (key: string) => void) {
+  public generateKeyboard(keyHandler: (key: string) => void) {
     charsInRange('a', 'z').forEach((letter) => {
-      const button = new Button({
+      const button = new ButtonComponent({
         classNames: ['key'],
         textContent: letter,
       });
@@ -24,6 +24,8 @@ class Keyboard extends BaseComponent {
       this.keys.set(letter, button);
       this.insertChild(button);
     });
+
+    this.setWindowListener(keyHandler);
   }
 
   setWindowListener(keyHandler: (key: string) => void) {
@@ -46,5 +48,3 @@ class Keyboard extends BaseComponent {
     });
   }
 }
-
-export default Keyboard;

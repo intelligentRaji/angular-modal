@@ -1,8 +1,6 @@
-import Keyboard from '@components/keyboard';
-import QuizController from './controllers/quiz.controller';
-import Gallows from '@components/gallows';
-import Quiz from '@components/quiz';
-import QuizService from '@services/quiz.service';
+import { AppController } from './controllers/app.controller';
+import { AppService } from '@services/app.service';
+import { AppView } from './views/app.view';
 
 class App {
   private root: HTMLElement;
@@ -12,19 +10,11 @@ class App {
   }
 
   public start() {
-    const keyboard = new Keyboard();
-    const gallows = new Gallows();
-    const quiz = new Quiz();
-    const service = new QuizService();
+    const view = new AppView();
+    const service = new AppService(6);
+    const controller = new AppController(view, service);
 
-    new QuizController({
-      gallows,
-      keyboard,
-      quiz,
-      service,
-    }).startGame();
-
-    this.root.append(gallows.getNode(), quiz.getNode(), keyboard.getNode());
+    this.root.append(view.render());
   }
 }
 

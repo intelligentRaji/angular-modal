@@ -1,11 +1,11 @@
-import BaseComponent from './baseComponent';
+import { BaseComponent } from './baseComponent';
 import { BaseComponentProps } from '@interfaces/BaseComponentProps';
 
 interface ButtonProps extends Omit<BaseComponentProps, 'tagName'> {
   listener?: (event?: MouseEvent) => void;
 }
 
-class Button extends BaseComponent<'button'> {
+export class ButtonComponent extends BaseComponent<'button'> {
   constructor({ classNames, textContent, listener }: ButtonProps) {
     super({
       tagName: 'button',
@@ -24,5 +24,3 @@ class Button extends BaseComponent<'button'> {
     this.setAttribute('disabled', 'true');
   }
 }
-
-export default Button;
