@@ -1,26 +1,26 @@
 import { BaseComponent } from './baseComponent';
-import { BaseComponentProps } from '@interfaces/BaseComponentProps';
+import { type BaseComponentProps } from '@interfaces/BaseComponentProps';
 
 interface ButtonProps extends Omit<BaseComponentProps, 'tagName'> {
-  listener?: (event?: MouseEvent) => void;
+  eventHandler?: (event?: MouseEvent) => void;
 }
 
 export class ButtonComponent extends BaseComponent<'button'> {
-  constructor({ classNames, textContent, listener }: ButtonProps) {
+  constructor({ classNames, textContent, eventHandler }: ButtonProps) {
     super({
       tagName: 'button',
       classNames,
       textContent,
     });
 
-    if (listener) this.addListener('click', listener);
+    if (eventHandler) this.addListener('click', eventHandler);
   }
 
-  enable() {
+  public enable(): void {
     this.removeAttribute('disabled');
   }
 
-  disable() {
+  public disable(): void {
     this.setAttribute('disabled', 'true');
   }
 }

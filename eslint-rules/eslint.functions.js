@@ -29,6 +29,4 @@ export const functions = {
   'no-return-assign': 'error',
   'no-useless-return': 'error',
   'prefer-arrow-callback': 'error',
-  'prefer-rest-params': 'error',
-  'prefer-spread': 'error',
 };

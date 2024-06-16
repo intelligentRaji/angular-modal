@@ -1,18 +1,19 @@
 import ListOfQuizzes from '../data/quizzes.json';
-import { TriviaMetrics } from '@interfaces/TriviaMetrics';
+import { type TriviaMetrics } from '@interfaces/TriviaMetrics';
 import { shuffleQuizzes } from '@utils/shuffleQuizzes';
 
 export class AppService {
+  public triviaMetrics: TriviaMetrics;
+  public currentAttempt = 0;
+  public readonly maxAttempts: number;
+
   private readonly ListOfQuizzes = shuffleQuizzes(ListOfQuizzes);
   private readonly numberOfQuizzes = this.ListOfQuizzes.length;
 
   private currentQuizId = 0;
   private currentQuiz = this.ListOfQuizzes[this.currentQuizId]!;
 
-  public triviaMetrics: TriviaMetrics;
   private guesses = new Set<string>();
-  public currentAttempt = 0;
-  public readonly maxAttempts: number;
 
   constructor(maxAttempts?: number) {
     this.maxAttempts = maxAttempts ?? 6;
@@ -25,15 +26,15 @@ export class AppService {
     };
   }
 
-  get question() {
+  public get question(): string {
     return this.currentQuiz.question;
   }
 
-  get answer() {
+  public get answer(): string {
     return this.currentQuiz.answer;
   }
 
-  get hiddenAnswer() {
+  public get hiddenAnswer(): string {
     return this.answer
       .split('')
       .map((letter) => {
@@ -44,15 +45,15 @@ export class AppService {
       .join('');
   }
 
-  get isCorrectAnswer() {
+  public get isCorrectAnswer(): boolean {
     return this.hiddenAnswer === this.answer;
   }
 
-  get isMaxAttemptsReached() {
+  public get isMaxAttemptsReached(): boolean {
     return this.currentAttempt >= this.maxAttempts;
   }
 
-  newCurrent() {
+  public newCurrent(): void {
     this.currentQuizId = (this.currentQuizId + 1) % this.numberOfQuizzes;
     this.guesses.clear();
     this.currentAttempt = 0;
@@ -66,16 +67,16 @@ export class AppService {
     };
   }
 
-  isGuessRight(playerGuess: string): boolean {
+  public isGuessRight(playerGuess: string): boolean {
     this.recordGuess(playerGuess);
     return this.answer.toLowerCase().includes(playerGuess);
   }
 
-  recordGuess(playerGuess: string) {
+  public recordGuess(playerGuess: string): void {
     this.guesses.add(playerGuess);
   }
 
-  incrementAttempts() {
+  public incrementAttempts(): void {
     if (this.currentAttempt < this.maxAttempts) this.currentAttempt += 1;
   }
 }

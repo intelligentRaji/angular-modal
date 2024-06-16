@@ -1,5 +1,5 @@
 import { BaseComponent } from '@components/baseComponent';
-import { BaseComponentProps } from '@interfaces/BaseComponentProps';
+import { type BaseComponentProps } from '@interfaces/BaseComponentProps';
 
 interface CanvasProps extends Omit<BaseComponentProps, 'tagName'> {
   width: number;
@@ -15,7 +15,7 @@ export class CanvasComponent extends BaseComponent<'canvas'> {
     this.node.height = height;
   }
 
-  protected setLineProperties(color: string, width: number, cap?: CanvasLineCap) {
+  protected setLineProperties(color: string, width: number, cap?: CanvasLineCap): void {
     if (this.context) {
       this.context.strokeStyle = color;
       this.context.lineWidth = width;
@@ -23,7 +23,7 @@ export class CanvasComponent extends BaseComponent<'canvas'> {
     }
   }
 
-  protected drawLine({ x1, y1, x2, y2 }: { x1: number; y1: number; x2: number; y2: number }) {
+  protected drawLine({ x1, y1, x2, y2 }: { x1: number; y1: number; x2: number; y2: number }): void {
     if (this.context) {
       this.context.beginPath();
       this.context.moveTo(x1, y1);
@@ -40,7 +40,7 @@ export class CanvasComponent extends BaseComponent<'canvas'> {
     centerX: number;
     centerY: number;
     radius: number;
-  }) {
+  }): void {
     if (this.context) {
       this.context.beginPath();
       this.context.arc(centerX, centerY, radius, 0, 2 * Math.PI);
@@ -48,7 +48,7 @@ export class CanvasComponent extends BaseComponent<'canvas'> {
     }
   }
 
-  protected clearCanvas() {
+  protected clearCanvas(): void {
     if (this.context) this.context.clearRect(0, 0, this.node.width, this.node.height);
   }
 }

@@ -28,8 +28,18 @@ export class GallowsComponent extends CanvasComponent {
     this.drawGallows();
   }
 
-  get numberOfDrawingSteps(): number {
+  public get numberOfDrawingSteps(): number {
     return this.humanDrawingSteps.length;
+  }
+
+  public drawStep(step: number): void {
+    const currentStep = this.humanDrawingSteps[step];
+    if (currentStep) currentStep();
+  }
+
+  public newDraw(): void {
+    this.clearCanvas();
+    this.drawGallows();
   }
 
   private drawGallows() {
@@ -38,15 +48,5 @@ export class GallowsComponent extends CanvasComponent {
     this.drawLine({ x1: 80, y1: 41, x2: 260, y2: 40 });
     this.drawLine({ x1: 80, y1: 80, x2: 120, y2: 42 });
     this.drawLine({ x1: 260, y1: 40, x2: 260, y2: 80 });
-  }
-
-  public drawStep(step: number) {
-    const currentStep = this.humanDrawingSteps[step];
-    if (currentStep) currentStep();
-  }
-
-  public newDraw() {
-    this.clearCanvas();
-    this.drawGallows();
   }
 }

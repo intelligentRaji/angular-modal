@@ -1,4 +1,4 @@
-import { QuizData } from '@interfaces/QuizData';
+import { type QuizData } from '@interfaces/QuizData';
 
 export function shuffleQuizzes(quizzes: QuizData[]): QuizData[] {
   const shuffledQuizzes = [...quizzes];

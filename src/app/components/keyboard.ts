@@ -9,7 +9,13 @@ export class KeyboardComponent extends BaseComponent {
     super({ classNames: ['keyboard'] });
   }
 
-  public generateKeyboard(keyHandler: (key: string) => void) {
+  public reset(): void {
+    this.keys.forEach((button) => {
+      button.enable();
+    });
+  }
+
+  public generateKeyboard(keyHandler: (key: string) => void): void {
     charsInRange('a', 'z').forEach((letter) => {
       const button = new ButtonComponent({
         classNames: ['key'],
@@ -28,7 +34,7 @@ export class KeyboardComponent extends BaseComponent {
     this.setWindowListener(keyHandler);
   }
 
-  setWindowListener(keyHandler: (key: string) => void) {
+  private setWindowListener(keyHandler: (key: string) => void): void {
     window.addEventListener('keydown', (event: KeyboardEvent) => {
       if (event.ctrlKey) return;
       const letter = event.key;
@@ -39,12 +45,6 @@ export class KeyboardComponent extends BaseComponent {
         button.disable();
         keyHandler(letter);
       }
-    });
-  }
-
-  public reset() {
-    this.keys.forEach((button) => {
-      button.enable();
     });
   }
 }

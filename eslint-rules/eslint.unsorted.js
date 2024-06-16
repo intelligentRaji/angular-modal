@@ -171,4 +171,10 @@ export const unsorted = {
   'require-await': 'error',
   'vars-on-top': 'error',
   yoda: 'error',
+
+  '@typescript-eslint/explicit-module-boundary-types': 'error',
+  '@typescript-eslint/method-signature-style': 'error',
+  '@typescript-eslint/no-confusing-void-expression': 'error',
+  '@typescript-eslint/no-invalid-void-type': 'error',
+  '@typescript-eslint/no-shadow': 'error',
 };

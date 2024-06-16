@@ -10,15 +10,15 @@ export class QuizComponent extends BaseComponent {
 
     this.insertChildren(this.question, this.answer, this.attempts);
   }
-  setQuestion(question: string) {
+  public setQuestion(question: string): void {
     this.question.setInnerHTML(question);
   }
 
-  setAnswer(answer: string) {
+  public setAnswer(answer: string): void {
     this.answer.setInnerHTML(answer);
   }
 
-  setAttempts(currentAttempt: number, maxAttempts: number) {
-    this.attempts.setContent(`Attempts: ${currentAttempt}/${maxAttempts}`);
+  public setAttempts(currentAttempt: number, maxAttempts: number): void {
+    this.attempts.setContent(`Attempts: ${currentAttempt.toString()}/${maxAttempts.toString()}`);
   }
 }

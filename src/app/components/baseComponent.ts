@@ -1,9 +1,13 @@
-import { BaseComponentProps } from '@interfaces/BaseComponentProps';
+import { type BaseComponentProps } from '@interfaces/BaseComponentProps';
 
 export class BaseComponent<K extends keyof HTMLElementTagNameMap = 'div'> {
   protected node: HTMLElementTagNameMap[K];
 
-  constructor({ tagName = 'div' as K, classNames = [], textContent = '' }: BaseComponentProps<K>) {
+  constructor({
+    tagName = 'div' as K,
+    classNames = [],
+    textContent = '',
+  }: BaseComponentProps<K>) {
     this.node = document.createElement(tagName);
     this.node.classList.add(...classNames);
     this.node.textContent = textContent;
@@ -23,7 +27,7 @@ export class BaseComponent<K extends keyof HTMLElementTagNameMap = 'div'> {
     this.node.textContent = content;
   }
 
-  public setInnerHTML(html: string) {
+  public setInnerHTML(html: string): void {
     this.node.innerHTML = html;
   }
 

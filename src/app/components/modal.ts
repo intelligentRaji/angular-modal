@@ -14,15 +14,15 @@ export class ModalComponent extends BaseComponent {
     this.insertChildren(this.modalText, this.button);
   }
 
-  setButtonFunction(listener: () => void) {
-    this.button.addListener('click', listener);
+  public setButtonFunction(eventHandler: () => void): void {
+    this.button.addListener('click', eventHandler);
   }
 
-  setModalText(text: string) {
+  public setModalText(text: string) :void {
     this.modalText.setContent(text);
   }
 
-  clearModal() {
+  public clearModal(): void {
     this.button.removeNode();
     this.modalText.removeNode();
   }
