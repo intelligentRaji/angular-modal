@@ -25,5 +25,5 @@ export const statements = {
   'no-continue': 'error',
 
   // General
-  curly: ['error', 'multi-or-nest', 'consistent'],
+  curly: ['error'],
 };
