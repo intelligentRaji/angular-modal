@@ -24,7 +24,7 @@ export default tsEslint.config(
       ...personalRules,
       'new-cap': 'off',
       '@angular-eslint/prefer-standalone': ['error'],
-      '@angular-eslint/prefer-on-push-component-change-detection': ['error'],
+      // '@angular-eslint/prefer-on-push-component-change-detection': ['error'],
       '@angular-eslint/directive-selector': [
         'error',
         {
