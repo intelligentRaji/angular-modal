@@ -1,24 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { QuizDataService } from './service/quiz-data.service';
+import { Observable } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-quiz',
   standalone: true,
-  imports: [],
+  imports: [AsyncPipe],
   templateUrl: './quiz.component.html',
   styleUrl: './quiz.component.scss',
   providers: [QuizDataService],
 })
-export class QuizComponent implements OnInit {
-  public question = 'Capital of France?';
+export class QuizComponent {
+  public question$: Observable<string>;
 
-  constructor(private quizDataService: QuizDataService) {}
-
-  public ngOnInit(): void {
-    this.quizDataService.getQuizById(0).subscribe((quizData) => {
-      if (quizData) {
-        this.question = quizData.question;
-      }
-    });
+  constructor(private quizDataService: QuizDataService) {
+    this.question$ = this.quizDataService.getQuizQuestion(0);
   }
 }
