@@ -2,7 +2,6 @@ import { ComponentFixture, ComponentFixtureAutoDetect, TestBed } from '@angular/
 import { QuizComponent } from './quiz.component';
 import { provideHttpClient } from '@angular/common/http';
 import { By } from '@angular/platform-browser';
-import { firstValueFrom } from 'rxjs';
 
 describe('QuizComponent', () => {
   let component: QuizComponent;
@@ -26,11 +25,12 @@ describe('QuizComponent', () => {
     expect(component).toBeDefined();
   });
 
-  it('should render the question', async () => {
-    const value = await firstValueFrom(component.question$);
-    const questionElement = fixture.debugElement.query(By.css('.question'));
-    const questionText = questionElement.nativeElement.textContent.trim();
-
-    expect(questionText).toBe(value);
+  it('should render the question', (done) => {
+    component.question$.subscribe((question) => {
+      const questionElement = fixture.debugElement.query(By.css('.question'));
+      const questionText = questionElement.nativeElement.textContent.trim();
+      expect(questionText).toBe(question);
+      done();
+    });
   });
 });

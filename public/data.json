@@ -1,6 +1,47 @@
 [
   {
     "id": 0,
-    "question": "Capital of Spain?"
+    "question": "Capital of Spain?",
+    "answer": "Madrid"
+  },
+  {
+    "id": 1,
+    "question": "Capital of France?",
+    "answer": "Paris"
+  },
+  {
+    "id": 2,
+    "question": "Capital of Germany?",
+    "answer": "Berlin"
+  },
+  {
+    "id": 3,
+    "question": "Capital of Italy?",
+    "answer": "Rome"
+  },
+  {
+    "id": 4,
+    "question": "Capital of Portugal?",
+    "answer": "Lisbon"
+  },
+  {
+    "id": 5,
+    "question": "Capital of Greece?",
+    "answer": "Athens"
+  },
+  {
+    "id": 6,
+    "question": "Capital of Russia?",
+    "answer": "Moscow"
+  },
+  {
+    "id": 7,
+    "question": "Capital of Japan?",
+    "answer": "Tokyo"
+  },
+  {
+    "id": 8,
+    "question": "Capital of China?",
+    "answer": "Beijing"
   }
 ]

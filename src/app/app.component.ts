@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { QuizComponent } from "./quiz/quiz.component";
+import { QuizComponent } from './quiz/quiz.component';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -10,8 +10,4 @@ import { QuizComponent } from "./quiz/quiz.component";
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
 })
-export class AppComponent {
-  public sum(a: number, b: number): number {
-    return a + b;
-  }
-}
+export class AppComponent {}

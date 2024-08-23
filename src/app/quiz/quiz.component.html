@@ -1,3 +1,10 @@
-<div class="question">
-  {{ question$ | async }}
-</div>
+@if (question$ | async; as question) {
+  <div class="question">{{ question }}</div>
+  <div class="answer">{{ answer$ | async }}</div>
+} @else {
+  <div class="placeholder">...</div>
+}
+
+<div>{{ pressedKey() }}</div>
+
+<app-keyboard />
