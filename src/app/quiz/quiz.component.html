@@ -1,10 +1,9 @@
-@if (question$ | async; as question) {
+@if (quizManagerService.question$ | async; as question) {
   <div class="question">{{ question }}</div>
-  <div class="answer">{{ answer$ | async }}</div>
-} @else {
-  <div class="placeholder">...</div>
 }
 
-<div>{{ pressedKey() }}</div>
+@if (quizManagerService.hiddenAnswer$ | async; as answer) {
+  <div class="answer">{{ answer }}</div>
+}
 
-<app-keyboard />
+<app-keyboard (keyEmitter)="pressKey($event)" />

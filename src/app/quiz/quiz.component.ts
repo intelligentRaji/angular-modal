@@ -1,9 +1,7 @@
-import { Component, signal } from '@angular/core';
-import { QuizService } from './quiz.service';
-import { Observable } from 'rxjs';
+import { Component } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { KeyboardComponent } from './keyboard/keyboard.component';
-import { KeyboardService } from './keyboard/keyboard.service';
+import { QuizManagerService } from './services/quiz-manager.service';
 
 @Component({
   selector: 'app-quiz',
@@ -11,23 +9,12 @@ import { KeyboardService } from './keyboard/keyboard.service';
   imports: [AsyncPipe, KeyboardComponent],
   templateUrl: './quiz.component.html',
   styleUrl: './quiz.component.scss',
-  providers: [QuizService],
+  providers: [QuizManagerService],
 })
 export class QuizComponent {
-  public errorMessage = signal('');
-  public question$: Observable<string>;
-  public answer$: Observable<string>;
-  public pressedKey = signal('');
+  constructor(public quizManagerService: QuizManagerService) {}
 
-  constructor(
-    private quizService: QuizService,
-    private keyboardService: KeyboardService,
-  ) {
-    this.question$ = this.quizService.question$;
-    this.answer$ = this.quizService.answer$;
-
-    this.keyboardService.click$.subscribe((key) => {
-      this.pressedKey.set(key);
-    });
+  public pressKey(key: string): void {
+    this.quizManagerService.addIfGuessed(key);
   }
 }
