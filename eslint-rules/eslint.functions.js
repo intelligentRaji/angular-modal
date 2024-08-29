@@ -16,12 +16,6 @@ export const functions = {
   ],
   'max-nested-callbacks': ['error', 3],
   'max-params': ['error', 3],
-  'no-empty-function': [
-    'error',
-    {
-      allow: ['arrowFunctions', 'functions', 'methods'],
-    },
-  ],
   'no-extra-bind': 'error',
   'no-loop-func': 'error',
   'no-new-func': 'error',
@@ -29,4 +23,6 @@ export const functions = {
   'no-return-assign': 'error',
   'no-useless-return': 'error',
   'prefer-arrow-callback': 'error',
+
+  '@typescript-eslint/no-empty-function': 'error',
 };

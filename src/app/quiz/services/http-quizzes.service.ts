@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, shareReplay } from 'rxjs';
+import { map, Observable, share } from 'rxjs';
 
 export interface Quiz {
   id: number;
@@ -17,7 +17,7 @@ export class HttpQuizzesService {
   constructor(private http: HttpClient) {}
 
   private get quizzes(): Observable<Quiz[]> {
-    return this.http.get<Quiz[]>(this.url).pipe(shareReplay());
+    return this.http.get<Quiz[]>(this.url).pipe(share());
   }
 
   public getQuizById(quizId: number): Observable<Quiz> {

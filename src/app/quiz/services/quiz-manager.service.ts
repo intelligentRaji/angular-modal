@@ -1,37 +1,39 @@
 import { Injectable } from '@angular/core';
-import { HttpQuizzesService } from './http-quizzes.service';
+import { HttpQuizzesService, Quiz } from './http-quizzes.service';
 import { BehaviorSubject, combineLatest, map, Observable, shareReplay } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class QuizManagerService {
-  public question$: Observable<string>;
-  public answer$: Observable<string>;
-  public hiddenAnswer$: Observable<string>;
-  public isQuizSolved$: Observable<boolean>;
-
   private currentQuizId = 0;
-  private guessedLetters = new Set<string>();
-  private hiddenAnswer$$ = new BehaviorSubject<Set<string>>(new Set());
 
-  constructor(private quizService: HttpQuizzesService) {
-    const quiz$ = this.quizService.getQuizById(this.currentQuizId).pipe(shareReplay());
+  private guessedLetters$$ = new BehaviorSubject<Set<string>>(new Set<string>());
+  private guessedLetters$ = this.guessedLetters$$.asObservable();
 
-    this.question$ = quiz$.pipe(map((quiz) => quiz.question));
-    this.answer$ = quiz$.pipe(map((quiz) => quiz.answer));
-    this.hiddenAnswer$ = combineLatest([this.answer$, this.hiddenAnswer$$]).pipe(
+  constructor(private httpQuizzesService: HttpQuizzesService) {}
+
+  public get answer$(): Observable<string> {
+    return this.quiz$.pipe(map((quiz) => quiz.answer));
+  }
+
+  public get question$(): Observable<string> {
+    return this.quiz$.pipe(map((quiz) => quiz.question));
+  }
+
+  public get hiddenAnswer$(): Observable<string> {
+    return combineLatest([this.answer$, this.guessedLetters$]).pipe(
       map(([answer, guessedLetters]) => this.hideNotGuessedLetters(answer, guessedLetters)),
     );
-    this.isQuizSolved$ = combineLatest([this.answer$, this.hiddenAnswer$$]).pipe(
-      map(([answer, guessedLetters]) => this.isQuizSolved(answer, guessedLetters)),
-    );
+  }
+
+  private get quiz$(): Observable<Quiz> {
+    return this.httpQuizzesService.getQuizById(this.currentQuizId).pipe(shareReplay());
   }
 
   public addIfGuessed(letter: string): void {
     this.answer$.pipe(map((answer) => this.answerIncludeLetter(answer, letter))).subscribe(() => {
-      this.guessedLetters.add(letter);
-      this.hiddenAnswer$$.next(this.guessedLetters);
+      this.guessedLetters$$.next(new Set([...this.guessedLetters$$.value, letter]));
     });
   }
 
@@ -44,9 +46,5 @@ export class QuizManagerService {
       .split('')
       .map((letter) => (guessedLetters.has(letter.toLowerCase()) ? letter : '_'))
       .join('');
-  }
-
-  private isQuizSolved(answer: string, guessedLetters: Set<string>): boolean {
-    return answer.split('').every((letter) => guessedLetters.has(letter.toLowerCase()));
   }
 }

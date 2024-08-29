@@ -4,7 +4,6 @@ export const classes = {
   'grouped-accessor-pairs': 'error',
   'new-cap': 'error',
   'no-new': 'error',
-  'no-useless-constructor': 'error',
 
   '@typescript-eslint/explicit-member-accessibility': [
     'error',
@@ -15,4 +14,5 @@ export const classes = {
     },
   ],
   '@typescript-eslint/member-ordering': 'error',
+  '@typescript-eslint/no-useless-constructor': 'error',
 };

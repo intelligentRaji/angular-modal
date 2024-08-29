@@ -1,8 +1,8 @@
-@if (quizManagerService.question$ | async; as question) {
+@if (question$ | async; as question) {
   <div class="question">{{ question }}</div>
 }
 
-@if (quizManagerService.hiddenAnswer$ | async; as answer) {
+@if (answer$ | async; as answer) {
   <div class="answer">{{ answer }}</div>
 }
 

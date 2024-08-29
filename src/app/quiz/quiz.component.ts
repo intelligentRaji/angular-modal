@@ -12,6 +12,9 @@ import { QuizManagerService } from './services/quiz-manager.service';
   providers: [QuizManagerService],
 })
 export class QuizComponent {
+  public question$ = this.quizManagerService.question$;
+  public answer$ = this.quizManagerService.hiddenAnswer$;
+
   constructor(public quizManagerService: QuizManagerService) {}
 
   public pressKey(key: string): void {
