@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, share } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 
 export interface Quiz {
   id: number;
@@ -17,7 +17,7 @@ export class HttpQuizzesService {
   constructor(private http: HttpClient) {}
 
   private get quizzes(): Observable<Quiz[]> {
-    return this.http.get<Quiz[]>(this.url).pipe(share());
+    return this.http.get<Quiz[]>(this.url);
   }
 
   public getQuizById(quizId: number): Observable<Quiz> {
