@@ -6,4 +6,14 @@
   <div class="answer">{{ answer }}</div>
 }
 
-<app-keyboard (keyEmitter)="pressKey($event)" />
+<div class="counter"> {{ quizManagerService.incorrectGuesses() }} / {{ quizManagerService.maxIncorrectGuesses }}</div>
+
+<app-modal (buttonEmitter)="quizManagerService.setQuiz()"
+           [show]="(showModal$ | async) ?? false"
+           [title]="'Congratulations!'" />
+
+<app-modal (buttonEmitter)="quizManagerService.setQuiz()"
+           [show]="quizManagerService.incorrectGuesses() === quizManagerService.maxIncorrectGuesses"
+           [title]="'You Lose!'" />
+
+<app-keyboard (keyEmitter)="pressKey($event)" [removeSubscribers]="(showModal$ | async) ?? false" />

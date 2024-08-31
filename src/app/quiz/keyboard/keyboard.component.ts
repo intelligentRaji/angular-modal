@@ -1,10 +1,11 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { fromEvent } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-keyboard',
   standalone: true,
-  imports: [],
+  imports: [AsyncPipe],
   template: `
     @for (key of keyboard; track key) {
       <button (click)="pressKey(key)">{{ key }}</button>
@@ -13,17 +14,20 @@ import { fromEvent } from 'rxjs';
   styleUrl: './keyboard.component.scss',
 })
 export class KeyboardComponent {
+  @Input() public removeSubscribers = false;
+
   @Output() public keyEmitter = new EventEmitter<string>();
 
   public keyboard = 'abcdefghijklmnopqrstuvwxyz'.split('');
 
-  constructor() {
-    fromEvent(document, 'keydown').subscribe((event: Event) => {
-      if (event instanceof KeyboardEvent && !event.ctrlKey) {
-        this.pressKey(event.key);
-      }
-    });
-  }
+  private readonly keyboardEventSubscription = fromEvent<KeyboardEvent>(
+    document,
+    'keydown',
+  ).subscribe((event) => {
+    if (!event.ctrlKey) {
+      this.pressKey(event.key);
+    }
+  });
 
   public pressKey(key: string): void {
     this.keyEmitter.emit(key);

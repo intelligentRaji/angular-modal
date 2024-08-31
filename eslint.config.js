@@ -9,7 +9,7 @@ export default tsEslint.config(
     files: ['**/*.ts'],
     extends: [
       eslint.configs.recommended,
-      ...tsEslint.configs.recommended,
+      ...tsEslint.configs.strictTypeChecked,
       ...tsEslint.configs.stylistic,
       ...angular.configs.tsRecommended,
     ],
