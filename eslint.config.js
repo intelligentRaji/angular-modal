@@ -22,6 +22,7 @@ export default tsEslint.config(
     },
     rules: {
       ...personalRules,
+      '@typescript-eslint/member-ordering': 'off',
       'new-cap': 'off',
       '@angular-eslint/prefer-standalone': ['error'],
       // '@angular-eslint/prefer-on-push-component-change-detection': ['error'],

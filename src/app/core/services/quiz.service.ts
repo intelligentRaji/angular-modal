@@ -1,6 +1,6 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpQuizzesService } from './http-quizzes.service';
-import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
+import { BehaviorSubject, combineLatest, map, switchMap, tap } from 'rxjs';
 import { QuizStatus } from '../../shared/enums/quiz-status';
 import { MAX_GUESS_ATTEMPTS } from '../../shared/constants/max-guess-attempts';
 
@@ -9,41 +9,45 @@ import { MAX_GUESS_ATTEMPTS } from '../../shared/constants/max-guess-attempts';
 })
 export class QuizService {
   public incorrectGuesses = signal(0);
+  private answer$$ = new BehaviorSubject<string>('');
+  public answer$ = this.answer$$.asObservable();
+  private question$$ = new BehaviorSubject<string>('');
+  public question$ = this.question$$.asObservable();
+  private guessedLetters$$ = new BehaviorSubject<Set<string>>(new Set<string>());
+  public guessedLetters$ = this.guessedLetters$$.asObservable();
 
-  public answer$;
-  public question$;
-  public guessedLetters$;
-  public quizStatus$;
+  private isAnswerGuessed$ = combineLatest([this.answer$, this.guessedLetters$]).pipe(
+    map(([answer, guessedLetters]) =>
+      answer
+        .toLowerCase()
+        .split('')
+        .every((letter) => guessedLetters.has(letter)),
+    ),
+  );
 
   private quizStatus$$ = new BehaviorSubject<QuizStatus>(QuizStatus.IN_PROGRESS);
-  private answer$$ = new BehaviorSubject<string>('');
-  private question$$ = new BehaviorSubject<string>('');
-  private guessedLetters$$ = new BehaviorSubject<Set<string>>(new Set<string>());
+  public quizStatus$ = this.guessedLetters$$.pipe(
+    switchMap(() =>
+      combineLatest([this.isAnswerGuessed$, this.quizStatus$$]).pipe(
+        map(([isAnswerGuessed, status]) => {
+          if (isAnswerGuessed) {
+            return QuizStatus.WON;
+          }
+          if (this.incorrectGuesses() >= MAX_GUESS_ATTEMPTS) {
+            return QuizStatus.LOST;
+          }
+          return status;
+        }),
+      ),
+    ),
+  );
+
+  public hiddenAnswer$ = combineLatest([this.answer$, this.guessedLetters$]).pipe(
+    map(([answer, guessedLetters]) => this.updateHiddenAnswer(answer, guessedLetters)),
+  );
 
   constructor(private httpQuizzesService: HttpQuizzesService) {
-    this.answer$ = this.answer$$.asObservable();
-    this.question$ = this.question$$.asObservable();
-    this.guessedLetters$ = this.guessedLetters$$.asObservable();
-    this.quizStatus$ = this.quizStatus$$.asObservable();
-
     this.setQuiz();
-  }
-
-  public get hiddenAnswer$(): Observable<string> {
-    return combineLatest([this.answer$, this.guessedLetters$]).pipe(
-      map(([answer, guessedLetters]) => this.updateHiddenAnswer(answer, guessedLetters)),
-    );
-  }
-
-  public get isAnswerGuessed$(): Observable<boolean> {
-    return combineLatest([this.answer$, this.guessedLetters$]).pipe(
-      map(([answer, guessedLetters]) =>
-        answer
-          .toLowerCase()
-          .split('')
-          .every((letter) => guessedLetters.has(letter)),
-      ),
-    );
   }
 
   public setInitialValues = (): void => {
@@ -70,7 +74,6 @@ export class QuizService {
     if (!this.answerIncludeLetter(this.answer$$.value, letter)) {
       this.updateIncorrectGuessCount();
     }
-    this.updateQuizStatus();
   }
 
   private answerIncludeLetter(answer: string, letter: string): boolean {
@@ -89,19 +92,5 @@ export class QuizService {
     return Array.from(answer)
       .map((letter) => (guessedLetters.has(letter.toLowerCase()) ? letter : '_'))
       .join('');
-  }
-
-  private updateQuizStatus(): void {
-    this.isAnswerGuessed$
-      .pipe(
-        map((isAnswerGuessed) => {
-          if (isAnswerGuessed) {
-            this.quizStatus$$.next(QuizStatus.WON);
-          } else if (this.incorrectGuesses() >= MAX_GUESS_ATTEMPTS) {
-            this.quizStatus$$.next(QuizStatus.LOST);
-          }
-        }),
-      )
-      .subscribe();
   }
 }
