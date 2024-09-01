@@ -9,11 +9,11 @@
 <div class="counter"> {{ quizManagerService.incorrectGuesses() }} / {{ quizManagerService.maxIncorrectGuesses }}</div>
 
 <app-modal (buttonEmitter)="quizManagerService.setQuiz()"
-           [show]="(showModal$ | async) ?? false"
+           [show]="quizManagerService.quizStatus() === 'WON'"
            [title]="'Congratulations!'" />
 
 <app-modal (buttonEmitter)="quizManagerService.setQuiz()"
-           [show]="quizManagerService.incorrectGuesses() === quizManagerService.maxIncorrectGuesses"
+           [show]="quizManagerService.quizStatus() === 'LOST'"
            [title]="'You Lose!'" />
 
-<app-keyboard (keyEmitter)="pressKey($event)" [removeSubscribers]="(showModal$ | async) ?? false" />
+<app-keyboard (keyEmitter)="pressKey($event)" [removeSubscribers]="quizManagerService.quizStatus() !== 'IN_PROGRESS'" />

@@ -16,11 +16,11 @@ export class QuizComponent {
   public question$ = this.quizManagerService.question$;
   public answer$ = this.quizManagerService.hiddenAnswer$;
 
-  public showModal$ = this.quizManagerService.isAllLettersGuessed$;
+  public showModal$ = this.quizManagerService.isAnswerGuessed$;
 
   constructor(public quizManagerService: QuizManagerService) {}
 
   public pressKey(key: string): void {
-    this.quizManagerService.addIfGuessed(key);
+    this.quizManagerService.processGuess(key);
   }
 }
