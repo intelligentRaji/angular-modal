@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { DATA_URL } from '../../shared/constants/data-url';
 
 export interface Quiz {
   id: number;
@@ -12,15 +13,13 @@ export interface Quiz {
   providedIn: 'root',
 })
 export class HttpQuizzesService {
-  public url = 'http://localhost:4200/data.json';
-
   private numberOfQuizzes = 0;
   private currentQuizId = 0;
 
   constructor(private http: HttpClient) {}
 
   private get quizzes(): Observable<Quiz[]> {
-    return this.http.get<Quiz[]>(this.url).pipe(tap(console.log));
+    return this.http.get<Quiz[]>(DATA_URL);
   }
 
   public getRandomQuiz(): Observable<Quiz> {

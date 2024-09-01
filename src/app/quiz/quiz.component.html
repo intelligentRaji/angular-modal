@@ -6,14 +6,14 @@
   <div class="answer">{{ answer }}</div>
 }
 
-<div class="counter"> {{ quizManagerService.incorrectGuesses() }} / {{ quizManagerService.maxIncorrectGuesses }}</div>
+<div class="counter"> {{ quizService.incorrectGuesses() }} / {{ MAX_GUESS_ATTEMPTS }}</div>
 
-<app-modal (buttonEmitter)="quizManagerService.setQuiz()"
-           [show]="quizManagerService.quizStatus() === 'WON'"
+<app-modal (buttonEmitter)="quizService.setQuiz()"
+           [show]="isWin"
            [title]="'Congratulations!'" />
 
-<app-modal (buttonEmitter)="quizManagerService.setQuiz()"
-           [show]="quizManagerService.quizStatus() === 'LOST'"
+<app-modal (buttonEmitter)="quizService.setQuiz()"
+           [show]="isLose"
            [title]="'You Lose!'" />
 
-<app-keyboard (keyEmitter)="pressKey($event)" [removeSubscribers]="quizManagerService.quizStatus() !== 'IN_PROGRESS'" />
+<app-keyboard (keyEmitter)="pressKey($event)" [allowEmitting]="isInProgress" />

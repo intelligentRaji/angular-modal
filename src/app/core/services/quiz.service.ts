@@ -1,28 +1,30 @@
 import { Injectable, signal } from '@angular/core';
 import { HttpQuizzesService } from './http-quizzes.service';
 import { BehaviorSubject, combineLatest, map, Observable, tap } from 'rxjs';
-import { QuizStatus } from '../../share/enums/quizStatus';
+import { QuizStatus } from '../../shared/enums/quiz-status';
+import { MAX_GUESS_ATTEMPTS } from '../../shared/constants/max-guess-attempts';
 
 @Injectable({
   providedIn: 'root',
 })
-export class QuizManagerService {
-  public maxIncorrectGuesses = 6;
+export class QuizService {
   public incorrectGuesses = signal(0);
 
-  public answer$: Observable<string>;
-  public question$: Observable<string>;
+  public answer$;
+  public question$;
+  public guessedLetters$;
+  public quizStatus$;
 
-  public quizStatus = signal(QuizStatus.IN_PROGRESS);
-
+  private quizStatus$$ = new BehaviorSubject<QuizStatus>(QuizStatus.IN_PROGRESS);
   private answer$$ = new BehaviorSubject<string>('');
   private question$$ = new BehaviorSubject<string>('');
   private guessedLetters$$ = new BehaviorSubject<Set<string>>(new Set<string>());
-  private guessedLetters$ = this.guessedLetters$$.asObservable();
 
   constructor(private httpQuizzesService: HttpQuizzesService) {
     this.answer$ = this.answer$$.asObservable();
     this.question$ = this.question$$.asObservable();
+    this.guessedLetters$ = this.guessedLetters$$.asObservable();
+    this.quizStatus$ = this.quizStatus$$.asObservable();
 
     this.setQuiz();
   }
@@ -45,9 +47,9 @@ export class QuizManagerService {
   }
 
   public setInitialValues = (): void => {
-    this.guessedLetters$$.next(new Set<string>());
     this.incorrectGuesses.set(0);
-    this.quizStatus.set(QuizStatus.IN_PROGRESS);
+    this.guessedLetters$$.next(new Set<string>());
+    this.quizStatus$$.next(QuizStatus.IN_PROGRESS);
   };
 
   public setQuiz(): void {
@@ -92,20 +94,14 @@ export class QuizManagerService {
   private updateQuizStatus(): void {
     this.isAnswerGuessed$
       .pipe(
-        map((allLettersGuessed) => {
-          if (this.incorrectGuesses() === this.maxIncorrectGuesses) {
-            return QuizStatus.LOST;
+        map((isAnswerGuessed) => {
+          if (isAnswerGuessed) {
+            this.quizStatus$$.next(QuizStatus.WON);
+          } else if (this.incorrectGuesses() >= MAX_GUESS_ATTEMPTS) {
+            this.quizStatus$$.next(QuizStatus.LOST);
           }
-
-          if (allLettersGuessed) {
-            return QuizStatus.WON;
-          }
-
-          return QuizStatus.IN_PROGRESS;
         }),
       )
-      .subscribe((quizStatus) => {
-        this.quizStatus.set(quizStatus);
-      });
+      .subscribe();
   }
 }

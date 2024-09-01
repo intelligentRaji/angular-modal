@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { KeyboardComponent } from './keyboard/keyboard.component';
-import { QuizManagerService } from './services/quiz-manager.service';
-import { ModalComponent } from './modal/modal.component';
+import { KeyboardComponent } from './components/keyboard/keyboard.component';
+import { QuizService } from '../core/services/quiz.service';
+import { ModalComponent } from './components/modal/modal.component';
+import { QuizStatus } from '../shared/enums/quiz-status';
+import { MAX_GUESS_ATTEMPTS } from '../shared/constants/max-guess-attempts';
 
 @Component({
   selector: 'app-quiz',
@@ -10,17 +12,33 @@ import { ModalComponent } from './modal/modal.component';
   imports: [AsyncPipe, KeyboardComponent, ModalComponent],
   templateUrl: './quiz.component.html',
   styleUrl: './quiz.component.scss',
-  providers: [QuizManagerService],
+  providers: [QuizService],
 })
 export class QuizComponent {
-  public question$ = this.quizManagerService.question$;
-  public answer$ = this.quizManagerService.hiddenAnswer$;
+  public question$ = this.quizService.question$;
+  public answer$ = this.quizService.hiddenAnswer$;
+  protected readonly MAX_GUESS_ATTEMPTS = MAX_GUESS_ATTEMPTS;
+  private quizStatus?: QuizStatus;
 
-  public showModal$ = this.quizManagerService.isAnswerGuessed$;
+  constructor(public quizService: QuizService) {
+    this.quizService.quizStatus$.subscribe((status) => {
+      this.quizStatus = status;
+    });
+  }
 
-  constructor(public quizManagerService: QuizManagerService) {}
+  public get isLose(): boolean {
+    return this.quizStatus === QuizStatus.LOST;
+  }
+
+  public get isWin(): boolean {
+    return this.quizStatus === QuizStatus.WON;
+  }
+
+  public get isInProgress(): boolean {
+    return this.quizStatus === QuizStatus.IN_PROGRESS;
+  }
 
   public pressKey(key: string): void {
-    this.quizManagerService.processGuess(key);
+    this.quizService.processGuess(key);
   }
 }
