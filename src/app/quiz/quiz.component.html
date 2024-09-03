@@ -1,18 +1,16 @@
-@if (question$ | async; as question) {
-  <div class="question">{{ question }}</div>
-}
+<div class="question">{{ question() }}</div>
 
-@if (answer$ | async; as answer) {
-  <div class="answer">{{ answer }}</div>
-}
 
-<div class="counter"> {{ quizService.incorrectGuesses() }} / {{ MAX_GUESS_ATTEMPTS }}</div>
+<div class="answer">{{ answer() }}</div>
 
-<app-modal (buttonEmitter)="quizService.setQuiz()"
+
+<div class="counter">{{ incorrectGuesses() }} / {{ MAX_GUESS_ATTEMPTS }}</div>
+
+<app-modal (buttonEmitter)="newQuiz()"
            [show]="isWin"
            [title]="'Congratulations!'" />
 
-<app-modal (buttonEmitter)="quizService.setQuiz()"
+<app-modal (buttonEmitter)="newQuiz()"
            [show]="isLose"
            [title]="'You Lose!'" />
 

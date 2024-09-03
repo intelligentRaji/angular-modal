@@ -1,45 +1,60 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { fromEvent, map, Observable, shareReplay } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
-import { QuizService } from '../../../core/services/quiz.service';
+
+export interface Key {
+  value: string;
+  isDisabled: boolean;
+}
 
 @Component({
   selector: 'app-keyboard',
   standalone: true,
   imports: [AsyncPipe],
   template: `
-    @for (key of keyboard; track key) {
-      <button [disabled]="isGuessed(key) | async" (click)="pressKey(key)">{{ key }}</button>
+    @for (key of keys; track key) {
+      <button [disabled]="key.isDisabled" (click)="updateKey($index)">{{ key.value }}</button>
     }
   `,
   styleUrl: './keyboard.component.scss',
+  host: {
+    '(document:keydown)': 'pressKey($event)',
+  },
 })
 export class KeyboardComponent {
   @Input() public allowEmitting = false;
 
-  @Output() public keyEmitter = new EventEmitter<string>();
+  public keys: Key[] = Array.from('abcdefghijklmnopqrstuvwxyz', (key) => ({
+    value: key,
+    isDisabled: false,
+  }));
 
-  public keyboard = 'abcdefghijklmnopqrstuvwxyz'.split('');
+  @Output() public keyEmitter = new EventEmitter<typeof this.keys>();
 
-  constructor(private quizManagerService: QuizService) {
-    fromEvent<KeyboardEvent>(document, 'keydown').subscribe((event) => {
-      if (event.ctrlKey || event.altKey) {
-        return;
-      }
-      this.pressKey(event.key);
-    });
-  }
-
-  public isGuessed(key: string): Observable<boolean> {
-    return this.quizManagerService.guessedLetters$.pipe(
-      map((guessedLetters) => guessedLetters.has(key)),
-      shareReplay(),
-    );
-  }
-
-  public pressKey(key: string): void {
-    if (this.allowEmitting) {
-      this.keyEmitter.emit(key);
+  public updateKey(keyIndex: number): void {
+    if (!this.allowEmitting) {
+      return;
     }
+    const key = this.keys[keyIndex];
+    key.isDisabled = true;
+    this.keyEmitter.emit(this.keys);
+  }
+
+  public pressKey(event: KeyboardEvent): void {
+    if (event.ctrlKey || event.altKey) {
+      return;
+    }
+
+    const keyIndex = this.keys.findIndex(
+      (key) => key.value === event.key.toLowerCase() && !key.isDisabled,
+    );
+
+    if (keyIndex === -1) {
+      return;
+    }
+    this.updateKey(keyIndex);
+  }
+
+  public resetKeys(): void {
+    this.keys.forEach((key) => (key.isDisabled = false));
   }
 }
