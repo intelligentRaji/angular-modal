@@ -1,0 +1,3 @@
+@for (key of keys; track key) {
+  <button [disabled]="key.isDisabled" (click)="updateKey($index)">{{ key.value }}</button>
+}

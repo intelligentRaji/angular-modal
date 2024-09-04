@@ -4,14 +4,14 @@
 <div class="answer">{{ answer() }}</div>
 
 
-<div class="counter">{{ incorrectGuesses() }} / {{ MAX_GUESS_ATTEMPTS }}</div>
+<div class="counter">{{ incorrectGuesses() }}</div>
 
 <app-modal (buttonEmitter)="newQuiz()"
-           [show]="isWin"
+           [show]="isWin()"
            [title]="'Congratulations!'" />
 
 <app-modal (buttonEmitter)="newQuiz()"
-           [show]="isLose"
+           [show]="isLose()"
            [title]="'You Lose!'" />
 
-<app-keyboard (keyEmitter)="pressKey($event)" [allowEmitting]="isInProgress" />
+<app-keyboard (keyEmitter)="pressKey($event)" [allowEmitting]="isInProgress()" />

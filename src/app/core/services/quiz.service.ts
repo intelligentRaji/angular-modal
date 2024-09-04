@@ -1,6 +1,6 @@
-import { Injectable, signal } from '@angular/core';
-import { HttpQuizzesService } from './http-quizzes.service';
-import { BehaviorSubject, tap } from 'rxjs';
+import { inject, Injectable, signal } from '@angular/core';
+import { HttpQuizzesService, Quiz } from './http-quizzes.service';
+import { BehaviorSubject } from 'rxjs';
 import { QuizStatus } from '../../shared/enums/quiz-status';
 import { Key } from '../../quiz/components/keyboard/keyboard.component';
 import { MAX_GUESS_ATTEMPTS } from '../../shared/constants/max-guess-attempts';
@@ -9,41 +9,28 @@ import { MAX_GUESS_ATTEMPTS } from '../../shared/constants/max-guess-attempts';
   providedIn: 'root',
 })
 export class QuizService {
+  private httpQuizzesService = inject(HttpQuizzesService);
+
   public incorrectGuesses = signal(0);
   public question = signal('');
   public hiddenAnswer = signal('');
+  private answer = '';
 
   private quizStatus$$ = new BehaviorSubject<QuizStatus>(QuizStatus.IN_PROGRESS);
   public quizStatus$ = this.quizStatus$$.asObservable();
 
-  private answer = '';
-
-  constructor(private httpQuizzesService: HttpQuizzesService) {
-    this.setQuiz();
+  public getQuiz(): void {
+    this.httpQuizzesService.getRandomQuiz().subscribe((quiz) => {
+      this.setQuizValues(quiz);
+    });
   }
 
-  public setInitialValues = (): void => {
+  private setQuizValues(quiz: Quiz): void {
+    this.answer = quiz.answer;
+    this.hiddenAnswer.set('_'.repeat(this.answer.length));
+    this.question.set(quiz.question);
     this.incorrectGuesses.set(0);
     this.quizStatus$$.next(QuizStatus.IN_PROGRESS);
-  };
-
-  public setQuiz(): void {
-    this.httpQuizzesService
-      .getRandomQuiz()
-      .pipe(
-        tap((quiz) => {
-          this.answer = quiz.answer;
-          this.hiddenAnswer.set(
-            this.answer
-              .split('')
-              .map(() => '_')
-              .join(''),
-          );
-          this.question.set(quiz.question);
-        }),
-        tap(this.setInitialValues),
-      )
-      .subscribe();
   }
 
   public processKeys(keys: Key[]): void {
@@ -55,28 +42,28 @@ export class QuizService {
   private updateStatus(): void {
     if (this.incorrectGuesses() >= MAX_GUESS_ATTEMPTS) {
       this.quizStatus$$.next(QuizStatus.LOST);
-    } else if (this.answer === this.hiddenAnswer()) {
+    }
+    if (this.hiddenAnswer() === this.answer) {
       this.quizStatus$$.next(QuizStatus.WON);
     }
   }
 
   private updateIncorrectGuessCount(keys: Key[]): void {
-    this.incorrectGuesses.set(
-      keys.reduce(
-        (incorrect, letter) =>
-          incorrect + (!this.answer.includes(letter.value) && letter.isDisabled ? 1 : 0),
-        0,
-      ),
-    );
+    const incorrectGuesses = keys.filter(this.isKeyPressedAndNotInAnswer).length;
+    this.incorrectGuesses.set(incorrectGuesses);
   }
 
+  private isKeyPressedAndNotInAnswer = (key: Key): boolean =>
+    key.isDisabled && !this.answer.toLowerCase().includes(key.value);
+
   private updateHiddenAnswer(keys: Key[]): void {
-    this.hiddenAnswer.set(
-      Array.from(this.answer)
-        .map((letter) =>
-          keys.some((key) => key.value === letter.toLowerCase() && key.isDisabled) ? letter : '_',
-        )
-        .join(''),
-    );
+    const revealedLetters = Array.from(this.answer, (letter) => {
+      const matchingKey = keys.find((key) => this.isKeyPressedAndMatchesLetter(key, letter));
+      return matchingKey ? letter : '_';
+    });
+    this.hiddenAnswer.set(revealedLetters.join(''));
   }
+
+  private isKeyPressedAndMatchesLetter = (key: Key, letter: string): boolean =>
+    key.value === letter.toLowerCase() && key.isDisabled;
 }

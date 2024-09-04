@@ -10,11 +10,7 @@ export interface Key {
   selector: 'app-keyboard',
   standalone: true,
   imports: [AsyncPipe],
-  template: `
-    @for (key of keys; track key) {
-      <button [disabled]="key.isDisabled" (click)="updateKey($index)">{{ key.value }}</button>
-    }
-  `,
+  templateUrl: './keyboard.component.html',
   styleUrl: './keyboard.component.scss',
   host: {
     '(document:keydown)': 'pressKey($event)',
@@ -23,23 +19,18 @@ export interface Key {
 export class KeyboardComponent {
   @Input() public allowEmitting = false;
 
-  public keys: Key[] = Array.from('abcdefghijklmnopqrstuvwxyz', (key) => ({
+  protected keys: Key[] = Array.from('abcdefghijklmnopqrstuvwxyz', (key) => ({
     value: key,
     isDisabled: false,
   }));
 
-  @Output() public keyEmitter = new EventEmitter<typeof this.keys>();
+  @Output() private keyEmitter = new EventEmitter<typeof this.keys>();
 
-  public updateKey(keyIndex: number): void {
-    if (!this.allowEmitting) {
-      return;
-    }
-    const key = this.keys[keyIndex];
-    key.isDisabled = true;
-    this.keyEmitter.emit(this.keys);
+  public resetKeys(): void {
+    this.keys.forEach((key) => (key.isDisabled = false));
   }
 
-  public pressKey(event: KeyboardEvent): void {
+  protected pressKey(event: KeyboardEvent): void {
     if (event.ctrlKey || event.altKey) {
       return;
     }
@@ -54,7 +45,12 @@ export class KeyboardComponent {
     this.updateKey(keyIndex);
   }
 
-  public resetKeys(): void {
-    this.keys.forEach((key) => (key.isDisabled = false));
+  protected updateKey(keyIndex: number): void {
+    if (!this.allowEmitting) {
+      return;
+    }
+    const key = this.keys[keyIndex];
+    key.isDisabled = true;
+    this.keyEmitter.emit(this.keys);
   }
 }
