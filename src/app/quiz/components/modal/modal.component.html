@@ -1,4 +1,2 @@
-@if (show) {
-  <h2> {{ title }} </h2>
-  <button (click)="buttonClick()">New Game</button>
-}
+<ng-content />
+<ng-content select="button" />

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-modal',
@@ -7,14 +7,4 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   templateUrl: './modal.component.html',
   styleUrl: './modal.component.scss',
 })
-export class ModalComponent {
-  @Input() public show = false;
-
-  @Input() public title = '';
-
-  @Output() public buttonEmitter = new EventEmitter();
-
-  public buttonClick(): void {
-    this.buttonEmitter.emit();
-  }
-}
+export class ModalComponent {}

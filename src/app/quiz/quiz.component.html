@@ -1,17 +1,23 @@
 <div class="question">{{ question() }}</div>
 
-
 <div class="answer">{{ answer() }}</div>
-
 
 <div class="counter">{{ incorrectGuesses() }}</div>
 
-<app-modal (buttonEmitter)="newQuiz()"
-           [show]="isWin()"
-           [title]="'Congratulations!'" />
-
-<app-modal (buttonEmitter)="newQuiz()"
-           [show]="isLose()"
-           [title]="'You Lose!'" />
-
 <app-keyboard (keyEmitter)="pressKey($event)" [allowEmitting]="isInProgress()" />
+
+<ng-template #win let-timer="timer">
+  <app-modal>
+    <h2>Congratulations!</h2>
+    <h3>new game starts in {{ timer() }}</h3>
+    <button (click)="startNewQuiz()">Click to play again!</button>
+  </app-modal>
+</ng-template>
+
+<ng-template #lose let-timer="timer">
+  <app-modal>
+    <h2>You Lose!</h2>
+    <h3>new game starts in {{ timer() }}</h3>
+    <button (click)="startNewQuiz()">Click to try again!</button>
+  </app-modal>
+</ng-template>
